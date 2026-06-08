@@ -30,14 +30,14 @@ export default function GraficoNivel({ historial }: Props) {
     fechaMinima.setDate(ahora.getDate() - diasFiltro);
 
     return [...historial]
-      .filter((item) => new Date(item.fecha_captura) >= fechaMinima)
+      .filter((item) => new Date(item.fecha) >= fechaMinima)
       .sort(
         (a, b) =>
-          new Date(a.fecha_captura).getTime() -
-          new Date(b.fecha_captura).getTime()
+          new Date(a.fecha).getTime() -
+          new Date(b.fecha).getTime()
       )
       .map((item) => ({
-        fecha: formatearFecha(item.fecha_captura),
+        fecha: formatearFecha(item.fecha),
         nivel: item.nivel,
       }));
   }, [historial, filtro]);

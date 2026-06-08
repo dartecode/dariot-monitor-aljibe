@@ -9,7 +9,7 @@ export function useTanque() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const tiempoRealRef = ref(database, "aljibe");
+    const tiempoRealRef = ref(database, "aljibe/tiempo_real");
 
     const unsubscribeTiempoReal = onValue(tiempoRealRef, (snapshot) => {
       if (snapshot.exists()) {
@@ -29,7 +29,7 @@ export function useTanque() {
 
   useEffect(() => {
     const historialRef = query(
-      ref(database, "historial_aljibe"),
+      ref(database, "aljibe/historial"),
       limitToLast(5000)
     );
 

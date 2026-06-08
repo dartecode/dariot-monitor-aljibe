@@ -13,7 +13,7 @@ function App() {
     );
   }
 
-  const nivel = tiempoReal?.nivel_actual ?? 0;
+  const nivel = tiempoReal?.nivel ?? 0;
 
   return (
     <main className="min-h-screen bg-slate-950 text-white p-4 md:p-8">
@@ -46,7 +46,7 @@ function App() {
                 <div className="grid grid-cols-2 gap-4">
                   <InfoCard
                     label="Nivel"
-                    value={`${tiempoReal?.nivel_actual ?? 0}%`}
+                    value={`${tiempoReal?.nivel ?? 0}%`}
                   />
 
                   <InfoCard
@@ -58,8 +58,8 @@ function App() {
                 <InfoCard
                   label="Última actualización"
                   value={
-                    tiempoReal?.fecha_captura
-                      ? formatearFecha(tiempoReal.fecha_captura)
+                    tiempoReal?.fecha
+                      ? formatearFecha(tiempoReal.fecha)
                       : "Sin datos"
                   }
                 />
@@ -106,7 +106,7 @@ function App() {
                     className="border-b border-slate-800 hover:bg-slate-800/30"
                   >
                     <td className="py-4">
-                      {formatearFecha(item.fecha_captura)}
+                      {formatearFecha(item.fecha)}
                     </td>
 
                     <td className="text-center py-4">

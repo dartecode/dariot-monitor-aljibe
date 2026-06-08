@@ -1,14 +1,14 @@
 export interface LecturaTiempoReal {
-  distancia_cm: number;
-  nivel_actual: number;
+  distancia: number;
+  nivel: number;
   estado: string;
-  fecha_captura: string;
+  fecha: string;
 }
 
 export interface LecturaHistorial {
   id: string;
-  distancia_cm: number;
+  distancia: number;
   nivel: number;
   estado: string;
-  fecha_captura: string;
+  fecha: string;
 }
