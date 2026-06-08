@@ -100,7 +100,7 @@ function App() {
               </thead>
 
               <tbody>
-                {historial.map((item) => (
+                {historial.slice(0,15).map((item) => (
                   <tr
                     key={item.id}
                     className="border-b border-slate-800 hover:bg-slate-800/30"
