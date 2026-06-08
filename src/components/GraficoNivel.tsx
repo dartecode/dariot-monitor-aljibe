@@ -31,42 +31,32 @@ export default function GraficoNivel({ historial }: Props) {
       .filter((item) => new Date(item.fecha) >= fechaMinima)
       .sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
 
-    let ticksEjeX: number[] = [];
-    if (filtro === "dia") {
-      const inicioDelDia = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate(), 0, 0, 0);
-
-      const saltoHoras = typeof window !== "undefined" && window.innerWidth < 768 ? 6 : 3;
-
-      for (let i = 0; i <= 24; i += saltoHoras) {
-        const horaTick = new Date(inicioDelDia.getTime() + i * 60 * 60 * 1000);
-        ticksEjeX.push(horaTick.getTime());
-      }
-    }
-
     const factorMuestreo = filtro === "dia" ? 1 : filtro === "semana" ? 5 : 15;
-    const datosMuestreados = datosFiltrados.filter((_, index) => index % factorMuestreo === 0);
 
-    const puntosGrafico = datosMuestreados.map((item) => ({
-      fechaOriginal: new Date(item.fecha).getTime(),
-      fechaFormateada: formatearFecha(item.fecha),
-      nivel: item.nivel,
-    }));
+    const puntosGrafico = datosFiltrados
+      .filter((_, index) => index % factorMuestreo === 0)
+      .map((item) => ({
+        fechaOriginal: new Date(item.fecha).getTime(),
+        fechaFormateada: formatearFecha(item.fecha),
+        nivel: item.nivel,
+      }));
 
-    return { puntosGrafico, ticksEjeX };
+    return puntosGrafico;
   }, [historial, filtro]);
 
-  const { puntosGrafico, ticksEjeX } = data;
-
-
   return (
-    <section className="bg-slate-900 rounded-3xl p-6 border border-slate-800">
+    <section className="rounded-3xl border border-white/10 bg-slate-950/70 p-6 shadow-2xl shadow-black/30">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <div>
-          <h2 className="text-2xl font-bold">Evolución del nivel</h2>
-          <p className="text-slate-400">Historial del nivel del aljibe.</p>
+          <h2 className="text-2xl font-bold text-white">
+            Evolución del nivel
+          </h2>
+          <p className="text-slate-400">
+            Historial del nivel del aljibe.
+          </p>
         </div>
 
-        <div className="flex bg-slate-800 rounded-2xl p-1 w-fit">
+        <div className="flex w-fit rounded-2xl border border-white/10 bg-white/5 p-1">
           {(["dia", "semana", "mes"] as FiltroGrafico[]).map((tipo) => (
             <BotonFiltro
               key={tipo}
@@ -79,73 +69,95 @@ export default function GraficoNivel({ historial }: Props) {
         </div>
       </div>
 
-      {puntosGrafico.length > 0 ? (
+      {data.length > 0 ? (
         <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={puntosGrafico}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+            <LineChart
+              data={data}
+              margin={{ top: 24, right: 18, left: -10, bottom: 0 }}
+            >
+              <CartesianGrid
+                stroke="#334155"
+                strokeOpacity={0.35}
+                vertical={false}
+              />
 
               <XAxis
                 dataKey="fechaOriginal"
-                stroke="#64748b"
                 type="number"
-                domain={filtro === "dia" ? [ticksEjeX[0], ticksEjeX[ticksEjeX.length - 1]] : ['auto', 'auto']}
-                ticks={filtro === "dia" ? ticksEjeX : undefined}
-                minTickGap={25} // <-- IMPORTANTE: Permite saltarse horas si el ancho de la pantalla no da abasto
-                // Eliminamos interval={0} para evitar que colapsen en pantallas pequeñas
+                domain={["dataMin", "dataMax"]}
+                stroke="#475569"
+                tick={{ fill: "#94a3b8", fontSize: 12 }}
+                tickLine={false}
+                axisLine={{ stroke: "#334155" }}
+                minTickGap={30}
                 tickFormatter={(value) => {
                   const date = new Date(value);
 
                   if (filtro === "dia") {
-                    const horas = date.getHours();
-
-                    if (horas === 0 && date.getMinutes() === 0) {
-                      return value === ticksEjeX[ticksEjeX.length - 1] ? "24:00" : "00:00";
-                    }
-
                     return date.toLocaleTimeString("es-EC", {
                       hour: "2-digit",
                       minute: "2-digit",
-                      hour12: false
+                      hour12: false,
                     });
                   }
 
-                  return date.toLocaleDateString("es-EC", { day: "numeric", month: "short" });
+                  return date.toLocaleDateString("es-EC", {
+                    day: "numeric",
+                    month: "short",
+                  });
                 }}
               />
 
               <YAxis
-                domain={[0, 100]}
+                domain={[0, 105]}
+                ticks={[0, 25, 50, 75, 100]}
+                stroke="#475569"
                 tick={{ fill: "#94a3b8", fontSize: 12 }}
+                tickLine={false}
+                axisLine={{ stroke: "#334155" }}
                 tickFormatter={(value) => `${value}%`}
               />
 
               <Tooltip
+                cursor={{
+                  stroke: "#38bdf8",
+                  strokeOpacity: 0.25,
+                }}
                 contentStyle={{
-                  backgroundColor: "#0f172a",
-                  border: "1px solid #1e293b",
-                  borderRadius: "12px",
+                  backgroundColor: "#020617",
+                  border: "1px solid rgba(255,255,255,0.10)",
+                  borderRadius: "16px",
                   color: "#fff",
+                  boxShadow: "0 20px 40px rgba(0,0,0,0.35)",
+                }}
+                labelStyle={{
+                  color: "#94a3b8",
                 }}
                 formatter={(value) => [`${value}%`, "Nivel"]}
-                labelFormatter={(_, items) => {
-                  return `Fecha: ${items[0]?.payload?.fechaFormateada || ""}`;
-                }}
+                labelFormatter={(_, items) =>
+                  `Fecha: ${items[0]?.payload?.fechaFormateada || ""}`
+                }
               />
 
               <Line
                 type="monotone"
                 dataKey="nivel"
-                stroke="#22d3ee"
+                stroke="#38bdf8"
                 strokeWidth={3}
                 dot={false}
-                activeDot={{ r: 6, stroke: "#0f172a", strokeWidth: 2 }}
+                activeDot={{
+                  r: 6,
+                  fill: "#38bdf8",
+                  stroke: "#020617",
+                  strokeWidth: 3,
+                }}
               />
             </LineChart>
           </ResponsiveContainer>
         </div>
       ) : (
-        <div className="h-72 flex items-center justify-center text-slate-400">
+        <div className="h-72 flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-slate-400">
           No hay datos para este rango.
         </div>
       )}
@@ -165,7 +177,9 @@ function BotonFiltro({
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${activo ? "bg-cyan-500 text-slate-950" : "text-slate-400 hover:text-white"
+      className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${activo
+        ? "bg-sky-400 text-slate-950 shadow-lg shadow-sky-400/20"
+        : "text-slate-400 hover:bg-white/5 hover:text-white"
         }`}
     >
       {children}

@@ -1,1 +1,15 @@
 @import "tailwindcss";
+
+@keyframes waterGlow {
+  0% {
+    filter: brightness(1);
+  }
+
+  50% {
+    filter: brightness(1.15);
+  }
+
+  100% {
+    filter: brightness(1);
+  }
+}

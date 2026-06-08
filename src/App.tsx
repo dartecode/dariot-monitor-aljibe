@@ -1,6 +1,8 @@
 import { useTanque } from "./hooks/useAljibe";
 import { formatearFecha } from "./utils/fecha";
 import GraficoNivel from "./components/GraficoNivel";
+import "./index.css";
+
 
 function App() {
   const { tiempoReal, historial, loading } = useTanque();
@@ -16,10 +18,10 @@ function App() {
   const nivel = tiempoReal?.nivel ?? 0;
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white p-4 md:p-8">
+    <main className="min-h-screen bg-[#0B1120] text-white p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
         <header>
-          <p className="text-cyan-400 font-semibold">DarIOT</p>
+          <p className="text-blue-400 font-semibold">DarIOT</p>
           <h1 className="text-3xl md:text-5xl font-bold">
             Monitoreo del Aljibe
           </h1>
@@ -29,13 +31,28 @@ function App() {
         </header>
 
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-slate-900 rounded-3xl p-6 border border-slate-800">
+          <div className="lg:col-span-2 bg-[#111827] rounded-3xl p-6 border border-[#374151]">
             <div className="flex flex-col md:flex-row items-center gap-8">
-              <div className="relative w-48 h-72 border-4 border-cyan-400 rounded-b-3xl rounded-t-lg overflow-hidden bg-slate-800">
+              <div className="relative w-48 h-72 border-4 border-blue-500 rounded-b-3xl rounded-t-lg overflow-hidden bg-[#1F2937">
                 <div
-                  className="absolute bottom-0 left-0 w-full bg-cyan-500 transition-all duration-700"
-                  style={{ height: `${nivel}%` }}
-                />
+                  className="absolute bottom-0 left-0 w-full transition-all duration-700"
+                  style={{
+                    height: `${nivel}%`,
+                    background:
+                      "linear-gradient(to top, #1d4ed8, #3b82f6, #60a5fa)",
+                    boxShadow: "0 0 25px rgba(59,130,246,.45)",
+                    animation: "waterGlow 3s ease-in-out infinite",
+                  }}
+                >
+                  <div
+                    className="absolute top-0 left-0 w-full"
+                    style={{
+                      height: "8px",
+                      background: "rgba(255,255,255,.25)",
+                      filter: "blur(2px)",
+                    }}
+                  />
+                </div>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span className="text-5xl font-bold drop-shadow-lg">
                     {nivel}%
@@ -67,18 +84,14 @@ function App() {
             </div>
           </div>
 
-          <div className="bg-slate-900 rounded-3xl p-6 border border-slate-800">
-            <h2 className="text-xl font-bold mb-4">Resumen</h2>
+          <div className="bg-[#111827] rounded-3xl p-6 border border-[#374151]">
+            <h2 className="text-xl font-bold mb-4">Estado operativo</h2>
 
             <div className="space-y-4">
-              <StatusBadge nivel={nivel} />
+              <StatusBadge estado={tiempoReal?.estado ?? "SIN DATOS"} />
 
-              <p className="text-slate-400">
-                El aljibe se encuentra actualmente en estado:
-              </p>
-
-              <p className="text-3xl font-bold text-cyan-400">
-                {tiempoReal?.estado ?? "Sin datos"}
+              <p className="text-slate-300">
+                {obtenerMensajeEstado(tiempoReal?.estado)}
               </p>
             </div>
           </div>
@@ -86,7 +99,7 @@ function App() {
 
         <GraficoNivel historial={historial} />
 
-        <section className="bg-slate-900 rounded-3xl p-6 border border-slate-800">
+        <section className="bg-[#111827] rounded-3xl p-6 border border-[#374151]">
           <h2 className="text-2xl font-bold mb-6">Historial reciente</h2>
 
           <div className="overflow-x-auto">
@@ -100,7 +113,7 @@ function App() {
               </thead>
 
               <tbody>
-                {historial.slice(0,15).map((item) => (
+                {historial.slice(0, 15).map((item) => (
                   <tr
                     key={item.id}
                     className="border-b border-slate-800 hover:bg-slate-800/30"
@@ -139,35 +152,48 @@ function App() {
 
 function InfoCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-slate-800 rounded-2xl p-4">
+    <div className="bg-[#1F2937] rounded-2xl p-4 border border-[#374151]">
       <p className="text-slate-400 text-sm">{label}</p>
       <p className="text-xl font-bold mt-1">{value}</p>
     </div>
   );
 }
 
-function StatusBadge({ nivel }: { nivel: number }) {
-  if (nivel <= 10) {
-    return (
-      <div className="rounded-2xl bg-red-500/10 text-red-400 p-4 font-semibold">
-        Nivel crítico
-      </div>
-    );
-  }
-
-  if (nivel <= 30) {
-    return (
-      <div className="rounded-2xl bg-yellow-500/10 text-yellow-400 p-4 font-semibold">
-        Nivel bajo
-      </div>
-    );
-  }
+function StatusBadge({ estado }: { estado: string }) {
+  const estilos = {
+    CRITICO: "bg-red-500/10 text-red-400",
+    BAJO: "bg-amber-500/10 text-amber-400",
+    MEDIO: "bg-yellow-500/10 text-yellow-400",
+    ALTO: "bg-green-500/10 text-green-400",
+    LLENO: "bg-blue-500/10 text-blue-400",
+  };
 
   return (
-    <div className="rounded-2xl bg-cyan-500/10 text-cyan-400 p-4 font-semibold">
-      Nivel estable
+    <div
+      className={`rounded-2xl p-4 font-semibold ${estilos[estado as keyof typeof estilos] ??
+        "bg-slate-500/10 text-slate-400"
+        }`}
+    >
+      {estado}
     </div>
   );
+}
+
+function obtenerMensajeEstado(estado?: string) {
+  switch (estado) {
+    case "LLENO":
+      return "El aljibe está lleno. No se requiere ninguna acción por el momento.";
+    case "ALTO":
+      return "El nivel de agua es alto. El sistema se encuentra en condiciones normales.";
+    case "MEDIO":
+      return "El nivel es medio. Se recomienda mantener el monitoreo activo.";
+    case "BAJO":
+      return "El nivel está bajo. Revisa el consumo o espera el ingreso de agua.";
+    case "CRITICO":
+      return "Nivel crítico. Se recomienda llamar un tanquero.";
+    default:
+      return "No hay datos suficientes para determinar el estado actual.";
+  }
 }
 
 export default App;
