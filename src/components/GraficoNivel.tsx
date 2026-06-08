@@ -84,8 +84,12 @@ export default function GraficoNivel({ historial }: Props) {
 
               <XAxis
                 dataKey="fecha"
-                tick={{ fill: "#94a3b8", fontSize: 12 }}
-                tickMargin={12}
+                tickFormatter={(value) =>
+                  new Date(value).toLocaleTimeString("es-EC", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                }
               />
 
               <YAxis
@@ -137,11 +141,10 @@ function BotonFiltro({
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${
-        activo
+      className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${activo
           ? "bg-cyan-500 text-slate-950"
           : "text-slate-400 hover:text-white"
-      }`}
+        }`}
     >
       {children}
     </button>
