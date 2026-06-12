@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ref, onValue, off, query, limitToLast } from "firebase/database";
+import { ref, onValue, off } from "firebase/database";
 import { database } from "../firebase/firebase";
 import type { LecturaTiempoReal, LecturaHistorial } from "../types/aljibe";
 
@@ -28,10 +28,7 @@ export function useTanque() {
   }, []);
 
   useEffect(() => {
-    const historialRef = query(
-      ref(database, "aljibe/historial"),
-      limitToLast(5000)
-    );
+    const historialRef = ref(database, "aljibe/historial");
 
     const unsubscribeHistorial = onValue(historialRef, (snapshot) => {
       const data = snapshot.val();
@@ -41,14 +38,26 @@ export function useTanque() {
         return;
       }
 
-      const lista: LecturaHistorial[] = Object.entries(data).map(
-        ([id, value]) => ({
-          id,
-          ...(value as Omit<LecturaHistorial, "id">),
-        })
+      const lista: LecturaHistorial[] = [];
+
+      Object.entries(data).forEach(([fechaDia, lecturasDia]) => {
+        if (!lecturasDia || typeof lecturasDia !== "object") return;
+
+        Object.entries(lecturasDia as Record<string, any>).forEach(
+          ([horaClave, value]) => {
+            lista.push({
+              id: `${fechaDia}_${horaClave}`,
+              ...(value as Omit<LecturaHistorial, "id">),
+            });
+          }
+        );
+      });
+
+      lista.sort(
+        (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
       );
 
-      setHistorial(lista.reverse());
+      setHistorial(lista);
     });
 
     return () => {
