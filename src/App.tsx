@@ -188,41 +188,4 @@ function InfoCard({ label, value }: { label: string; value: string }) {
   );
 }
 
-function StatusBadge({ estado }: { estado: string }) {
-  const estilos = {
-    CRITICO: "bg-red-500/10 text-red-400",
-    BAJO: "bg-amber-500/10 text-amber-400",
-    MEDIO: "bg-yellow-500/10 text-yellow-400",
-    ALTO: "bg-green-500/10 text-green-400",
-    LLENO: "bg-blue-500/10 text-blue-400",
-  };
-
-  return (
-    <div
-      className={`rounded-2xl p-4 font-semibold ${estilos[estado as keyof typeof estilos] ??
-        "bg-slate-500/10 text-slate-400"
-        }`}
-    >
-      {estado}
-    </div>
-  );
-}
-
-function obtenerMensajeEstado(estado?: string) {
-  switch (estado) {
-    case "LLENO":
-      return "El aljibe está lleno. No se requiere ninguna acción por el momento.";
-    case "ALTO":
-      return "El nivel de agua es alto. El sistema se encuentra en condiciones normales.";
-    case "MEDIO":
-      return "El nivel es medio. Se recomienda mantener el monitoreo activo.";
-    case "BAJO":
-      return "El nivel está bajo. Revisa el consumo o espera el ingreso de agua.";
-    case "CRITICO":
-      return "Nivel crítico. Se recomienda llamar un tanquero.";
-    default:
-      return "No hay datos suficientes para determinar el estado actual.";
-  }
-}
-
 export default App;
