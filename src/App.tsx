@@ -17,6 +17,16 @@ function App() {
 
   const nivel = tiempoReal?.nivel ?? 0;
 
+  const ALTO_CM = 180;
+  const ANCHO_CM = 200;
+  const LARGO_CM = 200;
+
+  const capacidadCm3 = ALTO_CM * ANCHO_CM * LARGO_CM;
+  const capacidadLitros = capacidadCm3 / 1000;
+  const capacidadM3 = capacidadCm3 / 1_000_000;
+
+  const litrosActuales = Math.round((nivel / 100) * capacidadLitros);
+
   return (
     <main className="min-h-screen bg-[#0B1120] text-white p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
@@ -30,10 +40,10 @@ function App() {
           </p>
         </header>
 
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-[#111827] rounded-3xl p-6 border border-[#374151]">
-            <div className="flex flex-col md:flex-row items-center gap-8">
-              <div className="relative w-48 h-72 border-4 border-blue-500 rounded-b-3xl rounded-t-lg overflow-hidden bg-[#1F2937">
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-[#111827] rounded-3xl p-6 border border-[#374151]">
+            <div className="flex flex-col md:flex-row items-center gap-8 h-full">
+              <div className="relative w-48 h-72 border-4 border-blue-500 rounded-b-3xl rounded-t-lg overflow-hidden bg-[#1F2937]">
                 <div
                   className="absolute bottom-0 left-0 w-full transition-all duration-700"
                   style={{
@@ -53,18 +63,17 @@ function App() {
                     }}
                   />
                 </div>
+
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span className="text-5xl font-bold drop-shadow-lg">
                     {nivel}%
                   </span>
                 </div>
               </div>
-              <div className="flex-1 flex flex-col gap-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <InfoCard
-                    label="Nivel"
-                    value={`${tiempoReal?.nivel ?? 0}%`}
-                  />
+
+              <div className="flex-1 flex flex-col gap-4 w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <InfoCard label="Nivel" value={`${tiempoReal?.nivel ?? 0}%`} />
 
                   <InfoCard
                     label="Estado"
@@ -80,19 +89,39 @@ function App() {
                       : "Sin datos"
                   }
                 />
+
+                <InfoCard
+                  label="Litros actuales estimados"
+                  value={`${litrosActuales.toLocaleString("es-EC")} L`}
+                />
               </div>
             </div>
           </div>
 
           <div className="bg-[#111827] rounded-3xl p-6 border border-[#374151]">
-            <h2 className="text-xl font-bold mb-4">Estado operativo</h2>
+            <h2 className="text-xl font-bold mb-4">Información del aljibe</h2>
 
-            <div className="space-y-4">
-              <StatusBadge estado={tiempoReal?.estado ?? "SIN DATOS"} />
+            <div className="rounded-2xl p-4 mb-5 bg-blue-500/10 border border-blue-500/20">
+              <p className="text-slate-400 text-sm">Capacidad total</p>
 
-              <p className="text-slate-300">
-                {obtenerMensajeEstado(tiempoReal?.estado)}
+              <p className="text-3xl font-bold text-blue-400 mt-1">
+                {capacidadLitros.toLocaleString("es-EC")} L
               </p>
+
+              <p className="text-slate-400 text-sm mt-1">
+                Equivalente a {capacidadM3.toLocaleString("es-EC")} m³
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <InfoCard label="Profundidad" value={`${ALTO_CM} cm`} />
+              <InfoCard label="Ancho" value={`${ANCHO_CM} cm`} />
+              <InfoCard label="Largo" value={`${LARGO_CM} cm`} />
+
+              <InfoCard
+                label="Volumen"
+                value={`${capacidadM3.toLocaleString("es-EC")} m³`}
+              />
             </div>
           </div>
         </section>
