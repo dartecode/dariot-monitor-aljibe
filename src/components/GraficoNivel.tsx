@@ -15,23 +15,32 @@ interface Props {
   historial: LecturaHistorial[];
 }
 
-type FiltroGrafico = "dia" | "semana" | "mes";
+type FiltroGrafico = "1hora" | "12horas" | "dia" | "semana" | "mes";
+
+const filtros: { valor: FiltroGrafico; etiqueta: string; horas: number }[] = [
+  { valor: "1hora", etiqueta: "1 hora", horas: 1 },
+  { valor: "12horas", etiqueta: "12 horas", horas: 12 },
+  { valor: "dia", etiqueta: "Día", horas: 24 },
+  { valor: "semana", etiqueta: "Semana", horas: 24 * 7 },
+  { valor: "mes", etiqueta: "Mes", horas: 24 * 30 },
+];
 
 export default function GraficoNivel({ historial }: Props) {
-  const [filtro, setFiltro] = useState<FiltroGrafico>("dia");
+  const [filtro, setFiltro] = useState<FiltroGrafico>("12horas");
 
   const data = useMemo(() => {
     const ahora = new Date();
-    const diasFiltro = filtro === "dia" ? 1 : filtro === "semana" ? 7 : 30;
-
-    const fechaMinima = new Date();
-    fechaMinima.setDate(ahora.getDate() - diasFiltro);
+    const horasFiltro = filtros.find(({ valor }) => valor === filtro)!.horas;
+    const fechaMinima = new Date(
+      ahora.getTime() - horasFiltro * 60 * 60 * 1000
+    );
 
     const datosFiltrados = [...historial]
       .filter((item) => new Date(item.fecha) >= fechaMinima)
       .sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
 
-    const factorMuestreo = filtro === "dia" ? 1 : filtro === "semana" ? 5 : 15;
+    const factorMuestreo =
+      filtro === "semana" ? 5 : filtro === "mes" ? 15 : 1;
 
     const puntosGrafico = datosFiltrados
       .filter((_, index) => index % factorMuestreo === 0)
@@ -56,14 +65,14 @@ export default function GraficoNivel({ historial }: Props) {
           </p>
         </div>
 
-        <div className="flex w-fit rounded-2xl border border-white/10 bg-white/5 p-1">
-          {(["dia", "semana", "mes"] as FiltroGrafico[]).map((tipo) => (
+        <div className="flex flex-wrap w-fit rounded-2xl border border-white/10 bg-white/5 p-1">
+          {filtros.map(({ valor, etiqueta }) => (
             <BotonFiltro
-              key={tipo}
-              activo={filtro === tipo}
-              onClick={() => setFiltro(tipo)}
+              key={valor}
+              activo={filtro === valor}
+              onClick={() => setFiltro(valor)}
             >
-              {tipo === "dia" ? "Día" : tipo === "semana" ? "Semana" : "Mes"}
+              {etiqueta}
             </BotonFiltro>
           ))}
         </div>
@@ -94,7 +103,7 @@ export default function GraficoNivel({ historial }: Props) {
                 tickFormatter={(value) => {
                   const date = new Date(value);
 
-                  if (filtro === "dia") {
+                  if (filtro === "1hora" || filtro === "12horas" || filtro === "dia") {
                     return date.toLocaleTimeString("es-EC", {
                       hour: "2-digit",
                       minute: "2-digit",
@@ -176,6 +185,8 @@ function BotonFiltro({
 }) {
   return (
     <button
+      type="button"
+      aria-pressed={activo}
       onClick={onClick}
       className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${activo
         ? "bg-sky-400 text-slate-950 shadow-lg shadow-sky-400/20"
