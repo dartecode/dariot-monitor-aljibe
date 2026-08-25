@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import App from "./App";
+import AvisoActualizacion from "./components/AvisoActualizacion";
 
 const Admin = lazy(() => import("./pages/Admin"));
 
@@ -24,6 +25,7 @@ export default function Router() {
           }
         />
       </Routes>
+      <AvisoActualizacion />
     </BrowserRouter>
   );
 }
