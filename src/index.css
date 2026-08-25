@@ -1,15 +1,109 @@
 @import "tailwindcss";
 
-@keyframes waterGlow {
-  0% {
-    filter: brightness(1);
+@theme {
+  --font-sans: "IBM Plex Sans Variable", "Arial Narrow", sans-serif;
+  --color-canvas: #071018;
+  --color-panel: #0d1821;
+  --color-panel-raised: #12212c;
+  --color-inset: #08131c;
+  --color-line: rgba(174, 207, 222, 0.11);
+  --color-line-strong: rgba(174, 207, 222, 0.2);
+  --color-ink: #f1f7f9;
+  --color-ink-soft: #b7c8d0;
+  --color-ink-muted: #718895;
+  --color-water: #28c4d8;
+  --color-water-bright: #74e5f2;
+  --color-water-deep: #087c94;
+  --color-positive: #54d6a1;
+  --color-caution: #f1b85b;
+  --color-danger: #ff7a8a;
+}
+
+:root {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background: var(--color-canvas);
+  color-scheme: dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+[data-theme="light"] {
+  --color-canvas: #edf4f5;
+  --color-panel: #ffffff;
+  --color-panel-raised: #f3f7f8;
+  --color-inset: #e7eff1;
+  --color-line: rgba(24, 61, 72, 0.12);
+  --color-line-strong: rgba(24, 61, 72, 0.2);
+  --color-ink: #10252d;
+  --color-ink-soft: #405b65;
+  --color-ink-muted: #71868e;
+  --color-water: #008ca3;
+  --color-water-bright: #00788f;
+  --color-water-deep: #0b8da3;
+  --color-positive: #16815e;
+  --color-caution: #a86600;
+  --color-danger: #c43d52;
+  color-scheme: light;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background: var(--color-canvas);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.range-water {
+  appearance: none;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--color-line-strong);
+}
+
+.range-water::-webkit-slider-thumb {
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border: 5px solid var(--color-panel-raised);
+  border-radius: 50%;
+  background: var(--color-water-bright);
+  box-shadow: 0 0 0 1px rgba(116, 229, 242, 0.45);
+}
+
+.range-water::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: 5px solid var(--color-panel-raised);
+  border-radius: 50%;
+  background: var(--color-water-bright);
+  box-shadow: 0 0 0 1px rgba(116, 229, 242, 0.45);
+}
+
+@keyframes waterPulse {
+  0%,
+  100% {
+    opacity: 0.72;
   }
 
   50% {
-    filter: brightness(1.15);
+    opacity: 1;
   }
+}
 
-  100% {
-    filter: brightness(1);
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

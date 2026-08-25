@@ -1,0 +1,81 @@
+{
+  "rules": {
+    ".read": true,
+    ".write": false,
+    "aljibe": {
+      "tiempo_real": {
+        ".write": "newData.exists()",
+        ".validate": "newData.hasChildren(['distancia', 'nivel', 'estado', 'fecha'])",
+        "distancia": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 200"
+        },
+        "nivel": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100"
+        },
+        "estado": {
+          ".validate": "newData.isString() && newData.val().matches(/^(CRITICO|BAJO|MEDIO|ALTO|LLENO)$/)"
+        },
+        "fecha": {
+          ".validate": "newData.isString()"
+        }
+      },
+      "historial": {
+        "$dia": {
+          "$hora": {
+            ".write": "newData.exists()",
+            ".validate": "newData.hasChildren(['distancia', 'nivel', 'estado', 'fecha'])",
+            "distancia": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 200"
+            },
+            "nivel": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100"
+            },
+            "estado": {
+              ".validate": "newData.isString() && newData.val().matches(/^(CRITICO|BAJO|MEDIO|ALTO|LLENO)$/)"
+            },
+            "fecha": {
+              ".validate": "newData.isString()"
+            }
+          }
+        }
+      },
+      "manual": {
+        ".write": "auth != null && auth.uid === 'RWrGChT3QyWE3chqPHHmlD2TWxu1'",
+        "tiempo_real": {
+          ".validate": "newData.hasChildren(['distancia', 'nivel', 'estado', 'fecha'])",
+          "distancia": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 200"
+          },
+          "nivel": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100"
+          },
+          "estado": {
+            ".validate": "newData.isString() && newData.val().matches(/^(CRITICO|BAJO|MEDIO|ALTO|LLENO)$/)"
+          },
+          "fecha": {
+            ".validate": "newData.isString()"
+          }
+        },
+        "historial": {
+          "$dia": {
+            "$hora": {
+              ".validate": "newData.hasChildren(['distancia', 'nivel', 'estado', 'fecha'])",
+              "distancia": {
+                ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 200"
+              },
+              "nivel": {
+                ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100"
+              },
+              "estado": {
+                ".validate": "newData.isString() && newData.val().matches(/^(CRITICO|BAJO|MEDIO|ALTO|LLENO)$/)"
+              },
+              "fecha": {
+                ".validate": "newData.isString()"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

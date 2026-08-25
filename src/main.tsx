@@ -1,10 +1,15 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "@fontsource-variable/ibm-plex-sans";
+import "./index.css";
+import Router from "./Router";
 
-createRoot(document.getElementById('root')!).render(
+const temaGuardado = localStorage.getItem("tema-aljibe");
+document.documentElement.dataset.theme =
+  temaGuardado === "light" ? "light" : "dark";
+
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
+    <Router />
   </StrictMode>,
-)
+);
