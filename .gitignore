@@ -30,3 +30,7 @@ Thumbs.db
 
 # Cache
 .cache/
+
+# Skills de agentes
+.agents/
+skills-lock.json

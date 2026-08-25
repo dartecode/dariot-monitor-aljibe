@@ -3,6 +3,7 @@ export interface LecturaTiempoReal {
   nivel: number;
   estado: string;
   fecha: string;
+  origen?: "sensor" | "manual";
 }
 
 export interface LecturaHistorial {
@@ -11,4 +12,5 @@ export interface LecturaHistorial {
   nivel: number;
   estado: string;
   fecha: string;
+  origen?: "sensor" | "manual";
 }
